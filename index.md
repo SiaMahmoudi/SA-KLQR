@@ -1,6 +1,6 @@
 ---
 layout: splash
-title: " Contact-Aware Control Method for Real-Time Deformable Tool Manipulation: A Case Study in the Environmental Swabbing
+title: " A State-Adaptive Koopman Control Framework for Real-Time Deformable Tool Manipulation in Robotic Environmental Swabbing.
 "
 description: "33."
 header:
