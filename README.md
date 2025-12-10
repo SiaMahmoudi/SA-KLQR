@@ -1,53 +1,176 @@
-<header>
-  <h1>Adaptive Koopman-Based Force Control for Deformable Tool Manipulation</h1>
-  <p><em>Project webpage for our research on robotic force control in deformable tool manipulation.</em></p>
-</header>
+# SA-KLQR ROS1 Workspace  
+Force–Tilt–Centroid Adaptive Control for UR5e Swabbing
 
-<!--
-  <<< Author notes: Step 4 >>>
-  Start this step by acknowledging the previous step.
-  Define terms and link to docs.github.com.
-  Historic note: previous version checked the file path. Previous version checked the front matter formatting.
--->
+This repository contains a complete ROS Noetic implementation of the **Surface-Aware Koopman LQR (SA-KLQR)** controller developed for robotic swabbing tasks.  
+The system integrates:
 
-## Step 4: Create a blog post
+- Force sensing via an Arduino-based FSR pad  
+- Surface plane detection using Intel RealSense and Open3D  
+- 6-state Koopman region models with LQR gains  
+- UR5e control through `/scaled_pos_joint_trajectory_controller`  
+- Full data logging for training new Koopman operators  
 
-_Your home page is looking great! :cowboy_hat_face:_
-
-GitHub Pages uses Jekyll. In Jekyll, we can create a blog by using specially named files and frontmatter. The files must be named `_posts/YYYY-MM-DD-title.md`. You must also include `title` and `date` in your frontmatter.
-
-**What is _frontmatter_?**: The syntax Jekyll files use is called YAML frontmatter. It goes at the top of your file and looks something like this:
-
-```yml
 ---
-title: "Welcome to my blog"
-date: 2019-01-20
+
+# 1. System Overview
+
+FSR Sensor  →  Force + Centroid  
+RealSense   →  Plane Normal (tilt_x, tilt_y)  
+SA-KLQR     →  6-state vector (force, centroid, tilt, derivative)  
+UR5e        →  Joint command via scaled_pos_joint_trajectory_controller  
+
+All components run as ROS nodes.
+
 ---
-```
 
-For more information about configuring front matter, see the [Jekyll frontmatter documentation](https://jekyllrb.com/docs/frontmatter/).
+# 2. Installation
 
-### :keyboard: Activity: Create a blog post
+## 2.1 Install dependencies
 
-1. Browse to the `my-pages` branch.
-1. Click the `Add file` dropdown menu and then on `Create new file`.
-1. Name the file `_posts/YYYY-MM-DD-title.md`.
-1. Replace the `YYYY-MM-DD` with today's date, and change the `title` of your first blog post if you'd like.
-   > If you do edit the title, make sure there are hyphens between your words.
-   > If your blog post date doesn't follow the correct date convention, you'll receive an error and your site won't build. For more information, see "[Page build failed: Invalid post date](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/troubleshooting-jekyll-build-errors-for-github-pages-sites)".
-1. Type the following content at the top of your blog post:
-   ```yaml
-   ---
-   title: "YOUR-TITLE"
-   date: YYYY-MM-DD
-   ---
-   ```
-1. Replace `YOUR-TITLE` with the title for your blog post.
-1. Replace `YYYY-MM-DD` with today's date.
-1. Type a quick draft of your blog post. Remember, you can always edit it later.
-1. Commit your changes to your branch.
-1. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
+sudo apt update  
+sudo apt install ros-noetic-desktop-full ros-noetic-ur-robot-driver ros-noetic-realsense2-camera python3-serial python3-scipy python3-numpy  
+pip3 install open3d  
 
-<footer>
-  <p>&copy; 2024 Research Group. This project is under review. Final details will be shared upon acceptance.</p>
-</footer>
+## 2.2 Build
+
+cd ~/catkin_ws  
+catkin_make  
+source devel/setup.bash  
+
+---
+
+# 3. FSR Sensor (Arduino Nano)
+
+Arduino prints 64 comma-separated force values (8×8 grid).  
+ROS publishes:
+
+- /fsr/force_map  
+- /fsr/force_total  
+
+Launch:
+
+roslaunch fsr_sensor_pkg fsr.launch  
+
+---
+
+# 4. RealSense Plane Detection
+
+Uses Open3D RANSAC to compute:
+
+- Plane normal
+- Tilt components (tilt_x, tilt_y)
+
+Published topics:
+
+- /surface_tilt  
+- /surface_normal  
+
+Launch:
+
+roslaunch realsense_plane_pkg plane_detection.launch  
+
+---
+
+# 5. SA-KLQR Controller
+
+Builds 6-state vector:
+
+[force_error, cx_err, cy_err, tilt_x, tilt_y, force_derivative]
+
+Launch:
+
+roslaunch sa_klqr_controller sa_klqr_full.launch  
+
+Publishes:
+
+- /sa_klqr/state_vector  
+- /sa_klqr/control_output  
+- /sa_klqr/enable  
+
+---
+
+# 6. Swab Orchestrator
+
+Enables KLQR when:
+
+1. Force OK  
+2. Plane detected  
+
+Launch:
+
+roslaunch swab_orchestrator_pkg swab_full_system.launch  
+
+---
+
+# 7. Data Logging
+
+Creates dataset for Koopman training:
+
+roslaunch data_collection_pkg data_collection.launch  
+
+Data saved to:
+
+~/sa_klqr_logs/YYYYMMDD_HHMMSS/swab_data.csv  
+
+---
+
+# 8. Koopman Operators
+
+Stored in:
+
+sa_klqr_controller/config/koopman_ops/
+
+Each file contains A (6×6) and B (6×1).  
+
+Use placeholder generator:
+
+python3 generate_koopman_placeholders.py  
+
+---
+
+# 9. Run Full System
+
+roslaunch swab_orchestrator_pkg swab_full_system.launch  
+
+---
+
+# 10. Directory Structure
+
+sa_klqr_controller/  
+fsr_sensor_pkg/  
+realsense_plane_pkg/  
+swab_orchestrator_pkg/  
+data_collection_pkg/  
+utils_pkg/  
+
+---
+
+# 11. Troubleshooting
+
+If no FSR:
+
+ls /dev/ttyUSB*  
+
+If no plane detection:
+
+rostopic echo /camera/depth/color/points  
+
+If robot not moving:
+
+rostopic list | grep scaled_pos  
+
+If KLQR not active:
+
+/sa_klqr/enable must be TRUE  
+
+---
+
+# 12. License
+
+MIT License
+
+---
+
+# 13. Contact
+
+Add your name & email here.
