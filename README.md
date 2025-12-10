@@ -1,7 +1,7 @@
 # SA-KLQR ROS1 Workspace  
 Force–Tilt–Centroid Adaptive Control for UR5e Swabbing
-<img width="2368" height="17<img width="3544" height="1768" alt="Swab_exp" src="https://github.com/user-attachments/assets/989018c4-05d6-4653-928a-6c7633b1c2f2" />
-92" alt="framework" src="https://github.com/user-attachments/assets/4a69720e-aa46-4306-9931-bddd3e6a5f5e" />
+<img width="3544" height="1768" alt="Swab_exp" src="https://github.com/user-attachments/assets/9be07c8f-25f9-4917-8e1a-2dee452d357b" />
+
 
 This repository contains a complete ROS Noetic implementation of the **Surface-Aware Koopman LQR (SA-KLQR)** controller developed for robotic swabbing tasks.  
 The system integrates:
@@ -22,6 +22,7 @@ SA-KLQR     →  6-state vector (force, centroid, tilt, derivative)
 UR5e        →  Joint command via scaled_pos_joint_trajectory_controller  
 
 All components run as ROS nodes.
+<img width="2368" height="1792" alt="framework" src="https://github.com/user-attachments/assets/02174463-95e0-446a-99b9-6b7030c9c298" />
 
 ---
 
