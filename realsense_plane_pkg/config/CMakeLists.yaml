@@ -1,0 +1,10 @@
+# RANSAC parameters
+distance_threshold: 0.01         # 1 cm threshold
+ransac_n: 3
+num_iterations: 200
+
+# Downsampling voxel size
+voxel_size: 0.01
+
+# Topic for RealSense pointcloud
+cloud_topic: "/camera/depth/color/points"

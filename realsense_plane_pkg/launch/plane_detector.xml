@@ -1,0 +1,12 @@
+<launch>
+
+    <!-- RealSense must already be running via realsense2_camera -->
+
+    <node pkg="realsense_plane_pkg"
+          type="plane_detector.py"
+          name="plane_detector"
+          output="screen">
+        <param name="config" value="$(find realsense_plane_pkg)/config/plane.yaml" />
+    </node>
+
+</launch>

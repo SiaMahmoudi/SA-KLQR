@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+import rospy
+import serial
+import numpy as np
+
+from std_msgs.msg import Float32, Float32MultiArray
+import yaml
+import os
+
+
+class FSRSerialNode:
+    def __init__(self):
+        rospy.init_node("fsr_serial_node")
+
+        # Load config
+        cfg_path = rospy.get_param("~config", "")
+        if cfg_path == "":
+            raise RuntimeError("FSR config path not provided")
+        if not os.path.exists(cfg_path):
+            raise RuntimeError("FSR config file not found: " + cfg_path)
+
+        with open(cfg_path, "r") as f:
+            cfg = yaml.safe_load(f)
+
+        self.port = cfg["port"]
+        self.baud = cfg["baud"]
+        self.nx = int(cfg["nx"])
+        self.ny = int(cfg["ny"])
+        self.scale = float(cfg["scale"])
+
+        # Serial connection
+        rospy.loginfo(f"Connecting to Arduino FSR on {self.port} ...")
+        self.ser = serial.Serial(self.port, self.baud, timeout=1)
+        rospy.loginfo("FSR serial connection established.")
+
+        # Publishers
+        self.pub_map = rospy.Publisher("/fsr/force_map", Float32MultiArray, queue_size=5)
+        self.pub_total = rospy.Publisher("/fsr/force_total", Float32, queue_size=5)
+
+    def run(self):
+        rate = rospy.Rate(100)  # read up to 100 Hz
+
+        expected = self.nx * self.ny
+
+        while not rospy.is_shutdown():
+            try:
+                line = self.ser.readline().decode().strip()
+                if not line:
+                    continue
+
+                values = line.split(",")
+                if len(values) != expected:
+                    continue
+
+                v = np.array(values, dtype=float) * self.scale
+
+                # publish full map
+                msg_map = Float32MultiArray()
+                msg_map.data = v.tolist()
+                self.pub_map.publish(msg_map)
+
+                # publish total force
+                total = float(np.sum(v))
+                self.pub_total.publish(total)
+
+            except Exception as e:
+                rospy.logerr("FSR read error: " + str(e))
+
+            rate.sleep()
+
+
+if __name__ == "__main__":
+    node = FSRSerialNode()
+    node.run()

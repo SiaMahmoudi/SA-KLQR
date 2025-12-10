@@ -1,0 +1,18 @@
+<launch>
+
+    <!-- FSR Arduino reader -->
+    <include file="$(find fsr_sensor_pkg)/launch/fsr.launch" />
+
+    <!-- RealSense plane detector -->
+    <include file="$(find realsense_plane_pkg)/launch/plane_detection.launch" />
+
+    <!-- SA-KLQR controller -->
+    <include file="$(find sa_klqr_controller)/launch/sa_klqr_full.launch" />
+
+    <!-- Swab orchestrator -->
+    <node pkg="swab_orchestrator_pkg"
+          type="swab_manager.py"
+          name="swab_manager"
+          output="screen" />
+
+</launch>

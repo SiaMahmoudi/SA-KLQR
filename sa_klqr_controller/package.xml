@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>sa_klqr_controller</name>
+  <version>0.0.1</version>
+  <description>SA-KLQR controller for UR5e swabbing task</description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>actionlib</depend>
+  <depend>control_msgs</depend>
+  <depend>ur_msgs</depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+
+</package>

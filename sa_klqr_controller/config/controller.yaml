@@ -1,0 +1,39 @@
+# ============================================
+# SA-KLQR Controller Configuration
+# ============================================
+
+# YAML path for koopman region definitions
+controller_yaml: "/home/USER/catkin_ws/src/sa_klqr_controller/config/controller.yaml"
+
+# Target normal force (in Newtons)
+target_force: 5.0
+
+# UR5e joint names (must match /joint_states)
+joint_names:
+  - shoulder_pan_joint
+  - shoulder_lift_joint
+  - elbow_joint
+  - wrist_1_joint
+  - wrist_2_joint
+  - wrist_3_joint
+
+# The joint to modulate for applying the KLQR output
+control_joint: "wrist_2_joint"
+
+# Region definitions
+regions:
+  - file: "K_1.npz"
+    center: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+  - file: "K_2.npz"
+    center: [0.5, -0.5, 0.0, 0.2, -0.1, 0.0]
+
+# LQR weights
+Q: [5, 5, 5, 2, 2, 1]     # penalize force error, centroid, tilt
+R: [0.5]                  # scalar control effort weight
+
+# gain blending factor β
+beta: 0.6
+
+# joint step multiplier — how much a unit KLQR output changes joint angle
+joint_step: 0.015

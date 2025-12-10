@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fsr_sensor_pkg</name>
+  <version>0.0.1</version>
+  <description>Serial FSR reader for SA-KLQR system</description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+
+</package>

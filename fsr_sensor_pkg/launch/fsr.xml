@@ -1,0 +1,10 @@
+<launch>
+
+    <node pkg="fsr_sensor_pkg"
+          type="fsr_serial_node.py"
+          name="fsr_serial"
+          output="screen">
+        <param name="config" value="$(find fsr_sensor_pkg)/config/fsr.yaml" />
+    </node>
+
+</launch>

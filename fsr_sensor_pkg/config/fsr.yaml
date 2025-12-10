@@ -1,0 +1,10 @@
+# Arduino serial port settings
+port: "/dev/ttyUSB0"
+baud: 115200
+
+# FSR array dimensions
+nx: 8
+ny: 8
+
+# force scaling factor (convert sensor units to Newtons)
+scale: 1.0
