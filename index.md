@@ -11,8 +11,8 @@ header:
     - label: "📄 Read the Paper (submitted)"
       url: "#"
       icon: "fas fa-file-pdf"
-    - label: "🖥️ GitHub Repository (will be public after being published)"
-      url: "#"
+    - label: "🖥️ GitHub Repository"
+      url: "https://github.com/SiaMahmoudi/SA-KLQR"
       icon: "fab fa-github"
     - label: "📹 Watch Demo"
       url: "https://drive.google.com/file/d/14zFcwjBR3LR7sCwHRbmao5qAlZ0gsD7U/view?usp=sharing"
@@ -68,8 +68,8 @@ Unlike traditional controllers, **SA-KLQR** adapts to **deformable tool dynamics
 📄 **[Read Full Paper](#)** *(Link to be added upon publication)*  
 
 ## 🖥️ Code & Dataset  
-- **GitHub Repository** → [SA-KLQR Codebase](#) *(To be published soon)*  
-- **Benchmark Dataset** → Available soon.  
+- **GitHub Repository** → [SA-KLQR Codebase](https://github.com/SiaMahmoudi/SA-KLQR) 
+- **Benchmark Dataset** →  [SA-KLQR Dataset](https://github.com/SiaMahmoudi/SA-KLQR)  
 
 ## 🎥 Video Demonstration  
 Watch SA-KLQR in action:  
@@ -79,7 +79,7 @@ Watch SA-KLQR in action:
 
 ## 🌍 Stay Connected  
 Stay updated with the latest advancements:  
-- **GitHub** → [SA-KLQR Repository](#)    
-- **Website** → [YourLab.com](#)  
+- **GitHub** → [SA-KLQR Repository](https://github.com/SiaMahmoudi/SA-KLQR)    
+- **Website** → [SAFELAB.com](#)  
 
 🚀 *This page is continuously updated. More content like authors informations and codes coming after acceptance!*
